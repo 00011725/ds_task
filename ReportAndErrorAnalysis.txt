@@ -1,0 +1,37 @@
+Brief report on Mozilla Common Voice12(uz language)
+
+Introduction
+This report summarizes the approach taken to assess the quality of the dataset used for training a speech-to-text (STT) model.
+
+About Dataset:
+The dataset contains about 214,000 records in the category Uzbek, divided into 5 sets: train, dev, test, unvalidated, and others. 
+
+Approach:
+1.Exploratory Data Analysis: getting information about columns, datatypes and statistical data. 
+
+2.Vizualization: creating plots, graphics, wordclouds, spectogramms and jointplots using  matplotlib, worcloud, librosa and seaborn libraries. Used mutagen library for finding duration audio file.
+
+3.Text Cleaning: finding and dropping nan(where needed), removing special characters, findind duplicates, creating waveforms, correcting text using spellchecker and librosa. Column gender was changed to categorical value(male: 0, female: 1, others: 2)
+
+4.Segmentation and Tokenization:: The raws of column "sentence" was joined and text was transformed to unique which help more natural speech synthesis.Text was further split into tokens (words) and left only unieq words to facilitate phonemic transcription and to enhance the granularity of analysis. 
+
+5.Phonemization: segmented sentences were converted into phonemic representations using grapheme-to-phoneme translation (G2P), allowing accurate speech synthesis. (ntlk did not work, although I tried to install it on my PC many times)
+
+6.Feature Search:
+TTS Task: TTS was developed from STT dataset by removing columns like segment, duration, segment duration and adding columns suxh as phoneme (for phoneticization). Average word length, number of syllables (using g2p-en) were found.
+STT Task: MFCC, Mel-spectrogram, Chroma features (using libraries like Librosa, pydub) were found.
+    
+
+Data quality assessment:
+Tried to identify missing sentences and audio files, find and remove nan (where necessary), remove special characters, find duplicates, create waveforms for audio while correcting text with spellcheck and librosa.
+Finally, I can say that the audio files in the dataset are not the best quality (the whole dataset), as 4-5 out of 10 samples I saw in spectrograms and waveforms either have long pauses or sharp increases in frequency.
+
+Error Analysis:
+Common errors in the dataset are missing values in columns, especially gender and age (more than 80thousand are Nan values). But in the csv files, the number of records is more than 213 thousand, while in jupyter, only about 205 thousand are shown. Column accents are not showing up in Jupyter, I tried to see if a column has 2 or more data types and change the data type, but none of that helped. The dataset needs to be cleaned and processed thoroughly (I can't say I've completed this because it was my first attempt with STT (audio) datasets). Almost 99% of the audio files are between 0 and 10 seconds long, and more than half of them are between 2 and 5 seconds. As I said, 2/5 of the dataset is anonymous, regardless of the age and gender of the person. The remaining 2/5 of the volunteers are men or people in their early twenties. 
+If the volunteer has a strong accent, the audio quality may not be as good because understanding becomes difficult, resulting in poor file quality, although the diversity of accents in a dataset is good because (e.g. age, accent) diversity can give more reliability and readiness to be used by different people. Age can also affect the performance of STT, but as I said, diversity of a dataset is good for a reliable and high-quality dataset.
+
+Insights for improving data quality for future models:
+To improve the quality of the dataset, needed more diversity in terms of age, gender, and accent or data augmentation techniques such as adding synthetic noise, removing pauses in speech, or changing the speech rate are needed. For a good dataset, we should prioritize adding high-quality audio samples when selecting the dataset, or discard low-quality audio. Mozilla Common Voice has a feedback mechanism (upvotes and downvotes) that I think is a good feature, and we can expand on that to allow users to report transcription errors, which will allow us to continually improve the dataset and the model. Also for handling low-resource languages or accents we can use synthetic data generation using TTS or generate alternatives of existing text data by paraphrasing and replacement of words. It can also used on imitating on different language dialect or accents for training models that can generalize better across variations.
+
+Conclusion
+The Mozilla Common Voice dataset can be identified as a good resource that can improve the quality and efficiency of future STT models.
